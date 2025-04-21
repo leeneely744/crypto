@@ -9,12 +9,6 @@ class Keccak:
     
     def process(self, block: str) -> str:
         return ''
-
-    def absorb(self, block: str) -> str:
-        return ''
-
-    def squeeze(self, block: str) -> str:
-        return ''
     
     def input_to_bits(self, input: str) -> str:
         result = ""
@@ -34,7 +28,7 @@ class Keccak:
 def main():
     print("This is a one-way hash function example.")
     print("Using keccak!")
-    print("Please enter a string to hash:")
+    print("Please enter a string to hash:", end=" ")
     input_str = input()
     
     keccak = Keccak(c=256, r=512)
