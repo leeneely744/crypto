@@ -22,7 +22,15 @@ class Keccak:
         ]
         self.processed_blocks = []  # list to store processed blocks
     
-    def process(self, block: str) -> str:
+    def round(self, block: str) -> str:
+        # repeat 24 times from theta to iota
+        for i in range(self.round_num):
+            # theta step
+            # rho step
+            # pi step
+            # chi step
+            # iota step
+            pass
         return ''
     
     def input_to_bits(self, input: str) -> str:
