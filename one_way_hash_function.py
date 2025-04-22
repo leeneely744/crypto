@@ -5,10 +5,7 @@ class Keccak:
     def __init__(self, c: int, r: int):
         self.c = c  # capacity
         self.r = r  # bit rate
-        # 2^l = b / 25
-        # round_num = 12 + 2^l
-        self.b = 1600  # band?
-        self.round_num = 12 + self.b / 25
+        self.round_num = 24  # If b=1600, round num is 24
         self.processed_blocks = []  # list to store processed blocks
     
     def process(self, block: str) -> str:
