@@ -23,7 +23,7 @@ class Keccak:
         ]
         self.processed_blocks = []  # list to store processed blocks
     
-    def round(self, block: str) -> str:
+    def round(self, block: bitarray):
         # repeat 24 times from theta to iota
         for i in range(self.round_num):
             # theta step
@@ -46,6 +46,11 @@ class Keccak:
     def execute(self, input: str) -> str:
         # absorb phase
         input_bits = self.input_to_bits(input)
+        # pass input_bits per r bits to round function
+        for i in range(0, len(input_bits), self.r):
+            block = input_bits[i:i + self.r]
+            # TODO: xor
+            self.round(block)
         return input_bits.to01()
 
         # squeeze phase
