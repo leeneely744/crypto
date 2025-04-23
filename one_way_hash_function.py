@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from bitarray import bitarray
 
 class Keccak:
     def __init__(self, c: int, r: int):
