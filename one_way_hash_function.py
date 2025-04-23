@@ -36,7 +36,17 @@ class Keccak:
     def input_to_bits(self, input: str) -> str:
         bits = ''.join(format(ord(c), 'b') for c in input)
         # multi-rate padding
-        bits += '1' + '0' * (self.r - len(bits) % self.r - 1) + '1'
+        padding_num = self.r - (len(bits) % self.r)
+        if padding_num == 0:
+            pass
+        elif padding_num == 2:
+            bits += '11'
+        elif padding_num == 1:
+            additional_block = '0' * (self.r - 1) + '1'
+            bits += additional_block
+        else:
+            # padding_num > 2
+            bits += '1' + '0' * (padding_num - 2) + '1'
         return bits
     
     def execute(self, input: str) -> str:
