@@ -34,7 +34,10 @@ class Keccak:
         return ''
     
     def input_to_bits(self, input: str) -> str:
-        return ''.join(format(ord(c), 'b') for c in input)
+        bits = ''.join(format(ord(c), 'b') for c in input)
+        # multi-rate padding
+        bits += '1' + '0' * (self.r - len(bits) % self.r - 1) + '1'
+        return bits
     
     def execute(self, input: str) -> str:
         # absorb phase
