@@ -23,6 +23,10 @@ class Keccak:
         ]
         self.state = bitarray('0' * (r+c))  # Initialize state
     
+    # In the Keccak theory, the round function needs
+    # xoring the state and the round constant RC as argments.
+    # But in this implementation,
+    # it has in the properties of the Keccak class.
     def round(self, round_index: int):
         rc = self.RC[round_index]
         # repeat 24 times from theta to iota
