@@ -21,9 +21,10 @@ class Keccak:
             0x8000000080008081, 0x8000000000008080,
             0x0000000080000001, 0x8000000080008008,
         ]
-        self.processed_blocks = []  # list to store processed blocks
+        self.state = bitarray('0' * (r+c))  # Initialize state
     
-    def round(self, block: bitarray):
+    def round(self, round_index: int):
+        rc = self.RC[round_index]
         # repeat 24 times from theta to iota
         for i in range(self.round_num):
             # theta step
@@ -49,7 +50,8 @@ class Keccak:
         # pass input_bits per r bits to round function
         for i in range(0, len(input_bits), self.r):
             block = input_bits[i:i + self.r]
-            # TODO: xor
+            for k in range(len(block)):
+                self.state[k] ^= block[k]  # XOR
             self.round(block)
         return input_bits.to01()
 
