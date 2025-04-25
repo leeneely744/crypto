@@ -21,7 +21,13 @@ class Keccak:
             0x8000000080008081, 0x8000000000008080,
             0x0000000080000001, 0x8000000080008008,
         ]
-        self.state = bitarray('0' * (r+c))  # Initialize state
+        self.lane_num = 64  # b/25
+        # State is a 5x5 grid of 64-bit lanes.
+        self.init_state = [[bitarray(self.lane_num) for y in range(5)] for x in range(5)]
+        self.init_state()
+    
+    def init_state(self):
+        self.state = self.init_state.copy()
     
     # In the Keccak theory, the round function needs
     # xoring the state and the round constant RC as argments.
