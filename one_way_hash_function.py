@@ -41,7 +41,6 @@ class Keccak:
     # But in this implementation,
     # it has in the properties of the Keccak class.
     def round(self, round_index: int):
-        rc = self.RC[round_index]
         # repeat 24 times from theta to iota
         for i in range(self.round_num):
             # theta step
@@ -74,6 +73,7 @@ class Keccak:
                     self.state[x][y] ^= B3
 
             # iota step
+            self.state[0][0] ^= self.RC[round_index]
             pass
         return ''
     
