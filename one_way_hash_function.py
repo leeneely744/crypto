@@ -38,12 +38,26 @@ class Keccak:
         # repeat 24 times from theta to iota
         for i in range(self.round_num):
             # theta step
+            Cs = [bitarray(self.lane_num) for _ in range(5)]
+            for x in range(5):
+                sheet = self.state[x]
+                Cs[x] = sheet[0] ^ sheet[1] ^ sheet[2] ^ sheet[3] ^ sheet[4]
+            Ds = [bitarray(self.lane_num) for _ in range(5)]
+            for x in range(5):
+                Ds[x] = Cs[(x + 4) % 5] ^ Cs[x + 1].rotate(1).copy()
+            for x in range(5):
+                D = Ds[x]
+                for y in range(5):
+                    self.state[x][y] ^= D
             # rho step
             # pi step
             # chi step
             # iota step
             pass
         return ''
+    
+    def rotate(self, block: bitarray, bit: int) -> bitarray:
+        return block[bit:] + block[:bit]
     
     def input_to_bits(self, input: str) -> bitarray:
         bits_str = ''.join(format(ord(c), 'b') for c in input)
