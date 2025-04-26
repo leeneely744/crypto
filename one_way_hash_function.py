@@ -62,7 +62,17 @@ class Keccak:
             for x in range(5):
                 for y in range(5):
                     B[y][2*x+3*y] = self.rotate(self.state[x][y], self.rotete_offset[x][y]).copy()
+
             # chi step
+            # 1. B2 = not B[x+1,y]
+            # 2. B3 = B2 and B[x+2,y]
+            # 3. A[x,y] = B[x,y] xor B3
+            for x in range(5):
+                for y in range(5):
+                    B2 = ~B[(x+1)%5][y]
+                    B3 = B2 & B[(x+2)%5][y]
+                    self.state[x][y] ^= B3
+
             # iota step
             pass
         return ''
