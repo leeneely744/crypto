@@ -25,6 +25,13 @@ class Keccak:
         # State is a 5x5 grid of 64-bit lanes.
         self.init_state = [[bitarray(self.lane_num) for y in range(5)] for x in range(5)]
         self.init_state()
+        self.rotete_offset = [
+            [0, 36, 3, 41, 18],
+            [1, 44, 10, 45, 2],
+            [62, 6, 43, 15, 61],
+            [28, 55, 25, 21, 56],
+            [27, 20, 39, 8, 14],
+        ]
     
     def init_state(self):
         self.state = self.init_state.copy()
@@ -38,19 +45,23 @@ class Keccak:
         # repeat 24 times from theta to iota
         for i in range(self.round_num):
             # theta step
-            Cs = [bitarray(self.lane_num) for _ in range(5)]
+            Cs = [bitarray('0' * self.lane_num) for _ in range(5)]
             for x in range(5):
                 sheet = self.state[x]
                 Cs[x] = sheet[0] ^ sheet[1] ^ sheet[2] ^ sheet[3] ^ sheet[4]
-            Ds = [bitarray(self.lane_num) for _ in range(5)]
+            Ds = [bitarray('0' * self.lane_num) for _ in range(5)]
             for x in range(5):
                 Ds[x] = Cs[(x + 4) % 5] ^ Cs[x + 1].rotate(1).copy()
             for x in range(5):
                 D = Ds[x]
                 for y in range(5):
                     self.state[x][y] ^= D
-            # rho step
-            # pi step
+
+            # rho and pi step
+            B = [[bitarray('0' * self.lane_num) for y in range(5)] for x in range(5)]
+            for x in range(5):
+                for y in range(5):
+                    B[y][2*x+3*y] = self.rotate(self.state[x][y], self.rotete_offset[x][y]).copy()
             # chi step
             # iota step
             pass
