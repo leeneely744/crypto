@@ -23,8 +23,7 @@ class Keccak:
         ]
         self.lane_num = 64  # b/25
         # State is a 5x5 grid of 64-bit lanes.
-        self.init_state = [[bitarray(self.lane_num) for y in range(5)] for x in range(5)]
-        self.init_state()
+        self.state = [[bitarray(self.lane_num) for y in range(5)] for x in range(5)]
         self.rotete_offset = [
             [0, 36, 3, 41, 18],
             [1, 44, 10, 45, 2],
@@ -32,9 +31,6 @@ class Keccak:
             [28, 55, 25, 21, 56],
             [27, 20, 39, 8, 14],
         ]
-    
-    def init_state(self):
-        self.state = self.init_state.copy()
     
     # In the Keccak theory, the round function needs
     # xoring the state and the round constant RC as argments.
