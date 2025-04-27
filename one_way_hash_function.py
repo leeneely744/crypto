@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from bitarray import bitarray
+from bitarray import bitarray, util as bitutil
 
 class Keccak:
     def __init__(self, c: int, r: int):
@@ -98,11 +98,13 @@ class Keccak:
             for k in range(len(block)):
                 self.state[k] ^= block[k]  # XOR
             self.round(block)
-        return input_bits.to01()
 
         # squeeze phase
-        result = ''
-        return result
+        # This is SHA3-256, so we need to return the first 256 bits.
+        output_bits = bitarray()
+        for i in range(4):
+            output_bits.extend(self.state[i][0]) 
+        return '0x' + bitutil.ba2int(output_bits)
 
 def main():
     print("This is a one-way hash function example.")
