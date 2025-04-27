@@ -46,7 +46,7 @@ class Keccak:
                 Cs[x] = sheet[0] ^ sheet[1] ^ sheet[2] ^ sheet[3] ^ sheet[4]
             Ds = [bitarray('0' * self.lane_num) for _ in range(5)]
             for x in range(5):
-                Ds[x] = self.rotate(Cs[(x + 4) % 5] ^ Cs[x + 1], 1).copy()
+                Ds[x] = self.rotate(Cs[(x + 4) % 5] ^ Cs[(x + 1)%5], 1).copy()
             for x in range(5):
                 D = Ds[x]
                 for y in range(5):
@@ -56,7 +56,7 @@ class Keccak:
             B = [[bitarray('0' * self.lane_num) for y in range(5)] for x in range(5)]
             for x in range(5):
                 for y in range(5):
-                    B[y][2*x+3*y] = self.rotate(self.state[x][y], self.rotete_offset[x][y]).copy()
+                    B[y][(2*x+3*y)%5] = self.rotate(self.state[x][y], self.rotete_offset[x][y]).copy()
 
             # chi step
             # 1. B2 = not B[x+1,y]
