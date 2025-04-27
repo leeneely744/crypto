@@ -91,8 +91,13 @@ class Keccak:
         # pass input_bits per r bits to round function
         for i in range(0, len(input_bits), self.r):
             block = input_bits[i:i + self.r]
-            for k in range(len(block)):
-                self.state[k] ^= block[k]  # XOR
+            # len(block) == self.r(1088)
+            # lane_num = 64
+            # xor to first 17 lanes
+            for i in range(17):
+                x = i % 5
+                y = i // 5
+                self.state[x][y] ^= block[i * self.lane_num:(i + 1) * self.lane_num]
             self.round(block)
 
         # squeeze phase
