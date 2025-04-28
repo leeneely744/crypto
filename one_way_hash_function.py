@@ -36,9 +36,9 @@ class Keccak:
     # xoring the state and the round constant RC as argments.
     # But in this implementation,
     # it has in the properties of the Keccak class.
-    def round(self, round_index: int):
+    def round(self):
         # repeat 24 times from theta to iota
-        for i in range(self.round_num):
+        for round_index in range(self.round_num):
             # theta step
             Cs = [bitarray('0' * self.lane_num) for _ in range(5)]
             for x in range(5):
@@ -98,7 +98,7 @@ class Keccak:
                 x = i % 5
                 y = i // 5
                 self.state[x][y] ^= block[i * self.lane_num:(i + 1) * self.lane_num]
-            self.round(block)
+            self.round()
 
         # squeeze phase
         # This is SHA3-256, so we need to return the first 256 bits.
