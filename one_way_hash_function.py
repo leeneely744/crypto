@@ -70,7 +70,6 @@ class Keccak:
 
             # iota step
             self.state[0][0] ^= self.RC[round_index]
-            pass
         return ''
     
     def rotate(self, block: bitarray, bit: int) -> bitarray:
