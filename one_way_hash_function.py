@@ -69,8 +69,14 @@ class Keccak:
                     self.state[x][y] ^= B3
 
             # iota step
-            self.state[0][0] ^= self.RC[round_index]
-        return ''
+            # rc is 16 digits hex.
+            # 1 digit hex is 4 bits.
+            # rc is 64 bits(16 * 4 = 64)
+            rc = bitarray(format(self.RC[round_index], '064b'))
+            rc.reverse()
+            for i in range(64):
+                self.state[x][y][i] ^= rc[i]
+        return True
     
     def rotate(self, block: bitarray, bit: int) -> bitarray:
         return block[bit:] + block[:bit]
