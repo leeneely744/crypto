@@ -110,7 +110,7 @@ class Keccak:
         output_bits = bitarray()
         for i in range(4):
             output_bits.extend(self.state[i][0]) 
-        return '0x' + bitutil.ba2int(output_bits)
+        return bitutil.ba2hex(output_bits)
 
 def main():
     print("This is a one-way hash function example.")
