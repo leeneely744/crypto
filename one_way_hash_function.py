@@ -77,8 +77,7 @@ class Keccak:
             # rc is 64 bits(16 * 4 = 64)
             rc = bitarray(format(self.RC[round_index], '064b'))
             rc.reverse()
-            for i in range(64):
-                self.state[x][y][i] ^= rc[i]
+            self.state[0][0] ^= rc
         return True
     
     def rotate(self, block: bitarray, bit: int) -> bitarray:
