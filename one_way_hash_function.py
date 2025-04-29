@@ -87,10 +87,14 @@ class Keccak:
     def input_to_bits(self, input: str) -> bitarray:
         bits_str = ''.join(format(ord(c), 'b') for c in input)
         bits = bitarray(bits_str)
-        bits.extend('00000110')
-        pad_len = (-len(bits) - 1) % self.r
-        bits.extend('0' * pad_len)
-        bits.extend('1')
+        return self.multi_rate_padding(bits)
+    
+    def multi_rate_padding(self, bits: bitarray) -> bitarray:
+        pad_bits = bitarray('1')
+        pad_len = (-len(bits) - 2) % self.r
+        pad_bits.extend(bitarray('0' * pad_len))
+        pad_bits.append(1)
+        bits += pad_bits
         return bits
     
     def execute(self, input: str) -> str:
