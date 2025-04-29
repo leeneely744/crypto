@@ -3,9 +3,9 @@
 from bitarray import bitarray, util as bitutil
 
 class Keccak:
-    def __init__(self, c: int, r: int):
-        self.c = c  # capacity
-        self.r = r  # bit rate
+    def __init__(self):
+        self.c = 512  # capacity
+        self.r = 1088  # bit rate
         self.round_num = 24  # If b=1600, round num is 24
         self.RC = [
             0x0000000000000001, 0x0000000000008082,
@@ -118,7 +118,7 @@ def main():
     print("Please enter a string to hash:", end=" ")
     input_str = input()
     
-    keccak = Keccak(c=512, r=1088)
+    keccak = Keccak()
     hashed_str = keccak.execute(input_str)
     print(f"Hashed string: {hashed_str}")
 
