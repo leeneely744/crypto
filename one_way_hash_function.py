@@ -32,6 +32,9 @@ class Keccak:
             [27, 20, 39, 8, 14],
         ]
     
+    def init_state(self):
+        self.state = [[bitarray(self.lane_num) for y in range(5)] for x in range(5)]
+    
     # In the Keccak theory, the round function needs
     # xoring the state and the round constant RC as argments.
     # But in this implementation,
@@ -91,6 +94,11 @@ class Keccak:
         return bits
     
     def execute(self, input: str) -> str:
+        if not input:
+            return ""
+        
+        self.init_state()
+        
         # absorb phase
         input_bits = self.input_to_bits(input)
         # pass input_bits per r bits to round function
