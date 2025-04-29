@@ -84,8 +84,9 @@ class Keccak:
         return block[bit:] + block[:bit]
     
     def input_to_bits(self, input: str) -> bitarray:
-        bits_str = ''.join(format(ord(c), 'b') for c in input)
-        bits = bitarray(bits_str)
+        bits = bitarray()
+        bits.frombytes(input.encode('utf-8'))
+        bits = bitarray(bits.to01()[::-1])
         return self.multi_rate_padding(bits)
     
     def multi_rate_padding(self, bits: bitarray) -> bitarray:
