@@ -89,6 +89,7 @@ class Keccak:
     
     def multi_rate_padding(self, bits: bitarray) -> bitarray:
         pad_bits = bitarray('1')
+        # This is a mistake: (len(bits) + 2) % self.r
         pad_len = (-len(bits) - 2) % self.r
         pad_bits.extend(bitarray('0' * pad_len))
         pad_bits.append(1)
