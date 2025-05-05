@@ -1,4 +1,5 @@
 import os
+import hashlib
 
 class MessageAuthCode:
     """
@@ -14,7 +15,8 @@ class MessageAuthCode:
         self.opad = bytes([0x5c] * self.block_size)
 
     def execute(self, message: str) -> str:
-        return "test: " + message
+        k_xor_ipad = bytes([a ^ b for a, b in zip(self.key, self.ipad)])
+        message = k_xor_ipad + message.encode('utf-8')
 
 def main():
     mac = MessageAuthCode()
