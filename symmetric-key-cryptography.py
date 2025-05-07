@@ -8,6 +8,7 @@ class SymmetricKeyCryptography:
         self.key_size = 128  # bits
         self.round_num = 10  # For 128-bit key size
         self.block_size = 128
+        self.state = [[0] * 4 for _ in range(4)]  # 4x4 matrix for AES state
         self.S_BOX = [
             # y=0  1     2     3     4     5     6     7     8     9     a     b     c     d     e     f
             0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,  # x=0
@@ -59,7 +60,8 @@ class SymmetricKeyCryptography:
         # Perform the AddRoundKey step
         pass
 
-    def execute(self):
+    def execute(self, message: str) -> str:
+        message_bytes = message.encode('utf-8')
         pass
 
 
