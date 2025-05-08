@@ -33,7 +33,7 @@ class SymmetricKeyCryptography:
         ]
 
     
-    def encrypto(self, round_index: int):
+    def round(self, round_index: int):
         for i in range(round_index):
             self.sub_bytes()
             self.shift_rows()
@@ -74,7 +74,7 @@ class SymmetricKeyCryptography:
         prev = os.urandom(16)
         for i in range(loop_num):
             block = message_bits[i * self.block_size:(i + 1) * self.block_size]
-            crypto = self.encrypto(block ^ prev)
+            crypto = self.round(block ^ prev)
             prev = crypto
         pass
 
