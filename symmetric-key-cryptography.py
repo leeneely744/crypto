@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from bitarray import bitarray, util as bitutil
+import os
 
 class SymmetricKeyCryptography:
     """
@@ -70,6 +71,7 @@ class SymmetricKeyCryptography:
     def execute(self, message: str) -> str:
         message_bits = self.pkcs7_pad(message)
         loop_num = len(message_bits) // self.block_size
+        prev = os.urandom(16)
         for i in range(loop_num):
             block = message_bits[i * self.block_size:(i + 1) * self.block_size]
             result = self.encrypto(block)
