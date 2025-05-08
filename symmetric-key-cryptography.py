@@ -74,7 +74,8 @@ class SymmetricKeyCryptography:
         prev = os.urandom(16)
         for i in range(loop_num):
             block = message_bits[i * self.block_size:(i + 1) * self.block_size]
-            result = self.encrypto(block)
+            crypto = self.encrypto(block ^ prev)
+            prev = crypto
         pass
 
 
