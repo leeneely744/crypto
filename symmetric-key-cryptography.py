@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from bitarray import bitarray, util as bitutil
+
 class SymmetricKeyCryptography:
     """
     Rijndael
@@ -59,6 +61,12 @@ class SymmetricKeyCryptography:
     def add_round_key(self):
         # Perform the AddRoundKey step
         pass
+
+    def padding(self, message: str) -> bitarray:
+        bits = bitarray(''.join(format(ord(c), 'b') for c in message))
+        pad_len = (self.block_size - len(bits) % self.block_size) % self.block_size
+        bits.extend(bitarray('0' * pad_len))
+        return bits
 
     def execute(self, message: str) -> str:
         message_bytes = message.encode('utf-8')
