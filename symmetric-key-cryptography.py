@@ -62,9 +62,9 @@ class SymmetricKeyCryptography:
         # Perform the AddRoundKey step
         pass
 
-    def pkcs7_pad(self, data, n=16):
-        pad = n - (len(data) % n or n)
-        return data + bytes([pad]) * pad
+    def pkcs7_pad(self, message: str, n=16):
+        pad = n - (len(message) % n or n)
+        return message + bytes([pad]) * pad
 
 
     def execute(self, message: str) -> str:
