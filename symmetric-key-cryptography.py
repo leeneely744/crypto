@@ -62,14 +62,17 @@ class SymmetricKeyCryptography:
         # Perform the AddRoundKey step
         pass
 
-    def padding(self, message: str) -> bitarray:
-        bits = bitarray(''.join(format(ord(c), 'b') for c in message))
-        pad_len = (self.block_size - len(bits) % self.block_size) % self.block_size
-        bits.extend(bitarray('0' * pad_len))
-        return bits
+    def pkcs7_pad(self, data, n=16):
+        pad = n - (len(data) % n or n)
+        return data + bytes([pad]) * pad
+
 
     def execute(self, message: str) -> str:
-        message_bytes = message.encode('utf-8')
+        message_bits = self.pkcs7_pad(message)
+        loop_num = len(message_bits) // self.block_size
+        for i in range(loop_num):
+            block = message_bits[i * self.block_size:(i + 1) * self.block_size]
+            result = self.encrypto(block)
         pass
 
 
