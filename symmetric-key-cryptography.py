@@ -80,13 +80,15 @@ class SymmetricKeyCryptography:
             return ""
         data = message.encode('utf-8')
         message_bytes = self.pkcs7_pad(data)
-        loop_num = len(message_bytes) // self.block_size
         prev = os.urandom(16)
-        for i in range(loop_num):
-            block = message_bytes[i * self.block_size:(i + 1) * self.block_size]
-            self.input_block_to_state(block ^ prev)
-            crypto = self.round(i)
+        round_count = 0
+        for offset in range(0, len(message_bytes), 16):
+            block = message_bytes[offset: offset + 16]
+            block = bytes(a ^ b for a, b in zip(message_bytes[offset: offset+16], prev))
+            self.input_block_to_state(block)
+            crypto = self.round(round_count)
             prev = crypto
+            round_count += 1
         pass
 
 
