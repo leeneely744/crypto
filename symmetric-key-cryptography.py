@@ -48,8 +48,10 @@ class SymmetricKeyCryptography:
             self.inv_sub_bytes()
 
     def sub_bytes(self):
-        # Perform the SubBytes step
-        pass
+        for col in range(4):
+            for row in range(4):
+                index = self.state[row][col]  # 0~255
+                self.state[row][col] = self.S_BOX[index]
 
     def shift_rows(self):
         # Perform the ShiftRows step
@@ -82,10 +84,13 @@ class SymmetricKeyCryptography:
         prev = os.urandom(self.block_size)
         round_count = 0
         for offset in range(0, len(message_bytes), self.block_size):
+            # block xor prev, and insert it to state
             block = message_bytes[offset: offset + self.block_size]
             block = bytes(a ^ b for a, b in zip(message_bytes[offset: offset+self.block_size], prev))
             self.input_block_to_state(block)
+
             crypto = self.round(round_count)
+
             prev = crypto
             round_count += 1
         pass
