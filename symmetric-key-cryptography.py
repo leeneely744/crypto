@@ -72,7 +72,7 @@ class SymmetricKeyCryptography:
         # filling order is column-major: state[0][0] → state[1][0]...
         for col in range(4):
             for row in range(4):
-                self.state[row][col] = block[row * 4 + col]
+                self.state[row][col] = block[col * 4 + row]
 
     def execute(self, message: str) -> str:
         message_bits = self.pkcs7_pad(message)
