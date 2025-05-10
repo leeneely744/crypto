@@ -54,8 +54,8 @@ class SymmetricKeyCryptography:
                 self.state[row][col] = self.S_BOX[index]
 
     def shift_rows(self):
-        # Perform the ShiftRows step
-        pass
+        for row in range(1, 4):
+            self.state[row] = self.state[row][row:] + self.state[row][:row]
 
     def mix_columns(self):
         # Perform the MixColumns step
