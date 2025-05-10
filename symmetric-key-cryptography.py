@@ -67,6 +67,12 @@ class SymmetricKeyCryptography:
         pad = n - (len(message) % n or n)
         return message + bytes([pad]) * pad
 
+    def input_block_to_state(self, block: bytes):
+        # state is a 4x4 matrix, block is a 16 bytes array
+        # filling order is column-major: state[0][0] → state[1][0]...
+        for col in range(4):
+            for row in range(4):
+                self.state[row][col] = block[row * 4 + col]
 
     def execute(self, message: str) -> str:
         message_bits = self.pkcs7_pad(message)
@@ -74,7 +80,8 @@ class SymmetricKeyCryptography:
         prev = os.urandom(16)
         for i in range(loop_num):
             block = message_bits[i * self.block_size:(i + 1) * self.block_size]
-            crypto = self.round(block ^ prev)
+            self.input_block_to_state(block ^ prev)
+            crypto = self.round(i)
             prev = crypto
         pass
 
