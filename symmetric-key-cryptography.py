@@ -33,15 +33,15 @@ class SymmetricKeyCryptography:
         ]
 
     
-    def round(self, round_index: int):
-        for i in range(round_index):
+    def round(self, round_count: int):
+        for i in range(round_count):
             self.sub_bytes()
             self.shift_rows()
             self.mix_columns()
             self.add_round_key()
     
-    def decrypto(self, round_index: int):
-        for i in range(round_index):
+    def decrypto(self, round_count: int):
+        for i in range(round_count):
             self.add_round_key()
             self.inv_mix_columns()
             self.inv_shift_rows()
