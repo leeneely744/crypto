@@ -10,7 +10,7 @@ class SymmetricKeyCryptography:
     def __init__(self):
         self.key_size = 128  # bits
         self.round_num = 10  # For 128-bit key size
-        self.block_size = 128
+        self.block_size = 16 # bytes (128 bits)
         self.state = [[0] * 4 for _ in range(4)]  # 4x4 matrix for AES state
         self.S_BOX = [
             # y=0  1     2     3     4     5     6     7     8     9     a     b     c     d     e     f
@@ -64,8 +64,7 @@ class SymmetricKeyCryptography:
         pass
 
     def pkcs7_pad(self, data: bytes) -> bytes:
-        block_size = self.block_size // 8  # Convert bits to bytes
-        pad = block_size - len(data) % block_size
+        pad = self.block_size - len(data) % self.block_size
         return data + bytes([pad]) * pad
 
     def input_block_to_state(self, block: bytes):
@@ -80,11 +79,11 @@ class SymmetricKeyCryptography:
             return ""
         data = message.encode('utf-8')
         message_bytes = self.pkcs7_pad(data)
-        prev = os.urandom(16)
+        prev = os.urandom(self.block_size)
         round_count = 0
-        for offset in range(0, len(message_bytes), 16):
-            block = message_bytes[offset: offset + 16]
-            block = bytes(a ^ b for a, b in zip(message_bytes[offset: offset+16], prev))
+        for offset in range(0, len(message_bytes), self.block_size):
+            block = message_bytes[offset: offset + self.block_size]
+            block = bytes(a ^ b for a, b in zip(message_bytes[offset: offset+self.block_size], prev))
             self.input_block_to_state(block)
             crypto = self.round(round_count)
             prev = crypto
