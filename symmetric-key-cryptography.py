@@ -63,7 +63,7 @@ class SymmetricKeyCryptography:
         # Perform the AddRoundKey step
         pass
 
-    def pkcs7_pad(self, data: bytes):
+    def pkcs7_pad(self, data: bytes) -> bytes:
         block_size = self.block_size // 8  # Convert bits to bytes
         pad = block_size - len(data) % block_size
         return data + bytes([pad]) * pad
@@ -79,11 +79,11 @@ class SymmetricKeyCryptography:
         if not message:
             return ""
         data = message.encode('utf-8')
-        message_bits = self.pkcs7_pad(data)
-        loop_num = len(message_bits) // self.block_size
+        message_bytes = self.pkcs7_pad(data)
+        loop_num = len(message_bytes) // self.block_size
         prev = os.urandom(16)
         for i in range(loop_num):
-            block = message_bits[i * self.block_size:(i + 1) * self.block_size]
+            block = message_bytes[i * self.block_size:(i + 1) * self.block_size]
             self.input_block_to_state(block ^ prev)
             crypto = self.round(i)
             prev = crypto
