@@ -2,6 +2,7 @@
 
 from bitarray import bitarray, util as bitutil
 import os
+import numpy as np
 
 class SymmetricKeyCryptography:
     """
@@ -56,6 +57,18 @@ class SymmetricKeyCryptography:
     def shift_rows(self):
         for row in range(1, 4):
             self.state[row] = self.state[row][row:] + self.state[row][:row]
+
+    def mul(self, a: int, b: int) -> int:
+        res = 0
+        for i in range(8):
+            if b & 1:
+                res ^= a
+            high = a & 0x80
+            a = (a << 1) & 0xFF
+            if high:
+                a ^= 0x1b
+            b >>= 1
+        return res
 
     def mix_columns(self):
         # Perform the MixColumns step
