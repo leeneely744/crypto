@@ -37,8 +37,7 @@ class SymmetricKeyCryptography:
             [1, 1, 2, 3],
             [3, 1, 1, 2]
         ]
-
-    
+  
     def round(self, round_count: int):
         for i in range(round_count):
             self.sub_bytes()
@@ -75,9 +74,16 @@ class SymmetricKeyCryptography:
             b >>= 1
         return res
 
+    def my_dot(self, x: int, y, int) -> int:
+        return self.mul(self.constant_matrix[x][0], self.state[0][y]) ^ \
+                self.mul(self.constant_matrix[x][1], self.state[1][y]) ^ \
+                self.mul(self.constant_matrix[x][2], self.state[2][y]) ^ \
+                self.mul(self.constant_matrix[x][3], self.state[3][y])
+
     def mix_columns(self):
-        # Perform the MixColumns step
-        pass
+        for col in range(4):
+            for row in range(4):
+                self.state[row][col] = self.my_dot(row, col)
 
     def add_round_key(self):
         # Perform the AddRoundKey step
