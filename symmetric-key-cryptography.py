@@ -9,7 +9,6 @@ class SymmetricKeyCryptography:
     """
     def __init__(self):
         self.key_size = 128  # bits
-        self.round_num = 10  # For 128-bit key size
         self.block_size = 16 # bytes (128 bits)
         self.state = [[0] * 4 for _ in range(4)]  # 4x4 matrix for AES state
         self.S_BOX = [
@@ -37,6 +36,9 @@ class SymmetricKeyCryptography:
             [1, 1, 2, 3],
             [3, 1, 1, 2]
         ]
+        self.Nr = 10  # round num for 128-bit key size
+        self.Nk = 4  # Number of original key words(4 hexadecimals)
+        self.Nb = 4  # block size in words(4 hexadecimals)
   
     def round(self, round_count: int):
         for i in range(round_count):
@@ -85,6 +87,9 @@ class SymmetricKeyCryptography:
             for row in range(4):
                 self.state[row][col] = self.my_dot(row, col)
 
+    def key_expansion(self):
+        pass
+    
     def add_round_key(self):
         # Perform the AddRoundKey step
         pass
