@@ -39,6 +39,8 @@ class SymmetricKeyCryptography:
         self.Nr = 10  # round num for 128-bit key size
         self.Nk = 4  # Number of original key words(4 hexadecimals)
         self.Nb = 4  # block size in words(4 hexadecimals)
+        # for test key
+        self.key = b"\x2b\x7e\x15\x16\x28\xae\xd2\xa6\xab\xf7\x15\x88\x09\xcf\x4f\x3c"
   
     def round(self, round_count: int):
         for i in range(round_count):
@@ -88,8 +90,11 @@ class SymmetricKeyCryptography:
                 self.state[row][col] = self.my_dot(row, col)
 
     def key_expansion(self):
-        pass
-    
+        k = self.key  # for short
+        w = []
+        for i in range(self.Nk):
+            w.append(k[4*i] << 24 | k[4*i+1] << 16 | k[4*i+2] << 8 | k[4*i+3])
+
     def add_round_key(self):
         # Perform the AddRoundKey step
         pass
