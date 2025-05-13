@@ -94,6 +94,24 @@ class SymmetricKeyCryptography:
         w = []
         for i in range(self.Nk):
             w.append(k[4*i] << 24 | k[4*i+1] << 16 | k[4*i+2] << 8 | k[4*i+3])
+        
+        i = self.Nk
+        while i < self.Nb * (self.Nr + 1):
+            temp = w[i-1]
+
+    def sub_words(self, word: int) -> int:
+        b0 = self.S_BOX[word >> 24 & 0xFF]
+        b1 = self.S_BOX[word >> 16 & 0xFF]
+        b2 = self.S_BOX[word >> 8 & 0xFF]
+        b3 = self.S_BOX[word & 0xFF]
+        return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3
+    
+    def rot_word(self, word: int) -> int:
+        b0 = word >> 24 & 0xFF
+        b1 = word >> 16 & 0xFF
+        b2 = word >> 8 & 0xFF
+        b3 = word & 0xFF
+        return (b1 << 24) | (b2 << 16) | (b3 << 8) | b0
 
     def add_round_key(self):
         # Perform the AddRoundKey step
