@@ -43,6 +43,46 @@ class SymmetricKeyCryptography:
         self.key = b"\x2b\x7e\x15\x16\x28\xae\xd2\xa6\xab\xf7\x15\x88\x09\xcf\x4f\x3c"
         self.key_expansion = self.generate_key_expansion()
   
+    def generate_key_expansion(self):
+        k = self.key  # for short
+        w = []
+        for i in range(self.Nk):
+            w.append(k[4*i] << 24 | k[4*i+1] << 16 | k[4*i+2] << 8 | k[4*i+3])
+        
+        i = self.Nk
+        while i < self.Nb * (self.Nr + 1):
+            temp = w[i-1]
+            if i % self.Nk == 0:
+                temp = self.sub_word(self.rot_word(temp)) ^ self.rcon[i // self.Nk]
+            elif self.Nk > 6 and i % self.Nk == 4:
+                temp = self.sub_word(temp)
+            w.append(w[i - self.Nk] ^ temp)
+            i += 1
+
+    def sub_word(self, word: int) -> int:
+        b0 = self.S_BOX[word >> 24 & 0xFF]
+        b1 = self.S_BOX[word >> 16 & 0xFF]
+        b2 = self.S_BOX[word >> 8 & 0xFF]
+        b3 = self.S_BOX[word & 0xFF]
+        return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3
+    
+    def rot_word(self, word: int) -> int:
+        b0 = word >> 24 & 0xFF
+        b1 = word >> 16 & 0xFF
+        b2 = word >> 8 & 0xFF
+        b3 = word & 0xFF
+        return (b1 << 24) | (b2 << 16) | (b3 << 8) | b0
+
+    def generate_rcon(self, n: int) -> list[int]:
+        rcon = [0x00] * n
+        rcon[0] = 0x01
+        for i in range(1, n):
+            rcon[i] = self.xtime(rcon[i-1])
+        return rcon
+    
+    def xtime(self, x: int) -> int:
+        return ((x << 1) ^ 0x1b) & 0xff if (x & 0x80) else (x << 1) & 0xff
+
     def round(self, round_count: int):
         for i in range(round_count):
             self.sub_bytes()
@@ -89,46 +129,6 @@ class SymmetricKeyCryptography:
         for col in range(4):
             for row in range(4):
                 self.state[row][col] = self.my_dot(row, col)
-
-    def generate_key_expansion(self):
-        k = self.key  # for short
-        w = []
-        for i in range(self.Nk):
-            w.append(k[4*i] << 24 | k[4*i+1] << 16 | k[4*i+2] << 8 | k[4*i+3])
-        
-        i = self.Nk
-        while i < self.Nb * (self.Nr + 1):
-            temp = w[i-1]
-            if i % self.Nk == 0:
-                temp = self.sub_word(self.rot_word(temp)) ^ self.rcon[i // self.Nk]
-            elif self.Nk > 6 and i % self.Nk == 4:
-                temp = self.sub_word(temp)
-            w.append(w[i - self.Nk] ^ temp)
-            i += 1
-
-    def sub_word(self, word: int) -> int:
-        b0 = self.S_BOX[word >> 24 & 0xFF]
-        b1 = self.S_BOX[word >> 16 & 0xFF]
-        b2 = self.S_BOX[word >> 8 & 0xFF]
-        b3 = self.S_BOX[word & 0xFF]
-        return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3
-    
-    def rot_word(self, word: int) -> int:
-        b0 = word >> 24 & 0xFF
-        b1 = word >> 16 & 0xFF
-        b2 = word >> 8 & 0xFF
-        b3 = word & 0xFF
-        return (b1 << 24) | (b2 << 16) | (b3 << 8) | b0
-
-    def generate_rcon(self, n: int) -> list[int]:
-        rcon = [0x00] * n
-        rcon[0] = 0x01
-        for i in range(1, n):
-            rcon[i] = self.xtime(rcon[i-1])
-        return rcon
-    
-    def xtime(self, x: int) -> int:
-        return ((x << 1) ^ 0x1b) & 0xff if (x & 0x80) else (x << 1) & 0xff
 
     def add_round_key(self):
         # Perform the AddRoundKey step
