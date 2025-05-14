@@ -43,7 +43,7 @@ class SymmetricKeyCryptography:
         self.key = b"\x2b\x7e\x15\x16\x28\xae\xd2\xa6\xab\xf7\x15\x88\x09\xcf\x4f\x3c"
         self.key_expansion = self.generate_key_expansion()
   
-    def generate_key_expansion(self):
+    def generate_key_expansion(self) -> list[int]:
         k = self.key  # for short
         w = []
         for i in range(self.Nk):
@@ -58,6 +58,7 @@ class SymmetricKeyCryptography:
                 temp = self.sub_word(temp)
             w.append(w[i - self.Nk] ^ temp)
             i += 1
+        return w
 
     def sub_word(self, word: int) -> int:
         b0 = self.S_BOX[word >> 24 & 0xFF]
