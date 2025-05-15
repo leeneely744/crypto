@@ -85,11 +85,16 @@ class SymmetricKeyCryptography:
         return ((x << 1) ^ 0x1b) & 0xff if (x & 0x80) else (x << 1) & 0xff
 
     def round(self, round_count: int):
-        for i in range(round_count):
+        self.add_round_key(0) # initial round key
+        for i in range(1, 10): # 1~9 rounds
             self.sub_bytes()
             self.shift_rows()
             self.mix_columns()
             self.add_round_key(i)
+        # round 10
+        self.sub_bytes()
+        self.shift_rows()
+        self.add_round_key(10)
     
     def decrypto(self, round_count: int):
         for i in range(round_count):
