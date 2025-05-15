@@ -10,7 +10,7 @@ class SymmetricKeyCryptography:
     def __init__(self):
         self.key_size = 128  # bits
         self.block_size = 16 # bytes (128 bits)
-        self.state = [[0] * 4 for _ in range(4)]  # 4x4 matrix for AES state
+        self.state = self.init_state()
         self.S_BOX = [
             # y=0  1     2     3     4     5     6     7     8     9     a     b     c     d     e     f
             0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,  # x=0
@@ -43,6 +43,10 @@ class SymmetricKeyCryptography:
         self.key = b"\x2b\x7e\x15\x16\x28\xae\xd2\xa6\xab\xf7\x15\x88\x09\xcf\x4f\x3c"
         self.key_expansion = self.generate_key_expansion()
   
+    def init_state(self):
+        # 4x4 matrix for AES state
+        self.state = [[0] * 4 for _ in range(4)]
+
     def generate_key_expansion(self) -> list[int]:
         k = self.key  # for short
         w = []
