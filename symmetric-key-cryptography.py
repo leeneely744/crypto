@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from bitarray import bitarray, util as bitutil
 import os
 
 class SymmetricKeyCryptography:
@@ -99,13 +98,6 @@ class SymmetricKeyCryptography:
         self.sub_bytes()
         self.shift_rows()
         self.add_round_key(10)
-    
-    def decrypto(self, round_count: int):
-        for i in range(round_count):
-            self.add_round_key()
-            self.inv_mix_columns()
-            self.inv_shift_rows()
-            self.inv_sub_bytes()
 
     def sub_bytes(self):
         for col in range(4):
@@ -165,11 +157,15 @@ class SymmetricKeyCryptography:
 
     def execute(self, message: str) -> str:
         if not message:
+            print("Please enter a message. Do nothitng.")
             return ""
+        
         data = message.encode('utf-8')
         message_bytes = self.pkcs7_pad(data)
         prev = os.urandom(self.block_size)
         round_count = 0
+
+        final_crypto = b""
         for offset in range(0, len(message_bytes), self.block_size):
             # block xor prev, and insert it to state
             block = message_bytes[offset: offset + self.block_size]
@@ -180,7 +176,9 @@ class SymmetricKeyCryptography:
 
             prev = crypto
             round_count += 1
-        pass
+            final_crypto += crypto
+
+        return final_crypto.hex()
 
 
 def main():
@@ -188,8 +186,8 @@ def main():
     print("Please enter a message:", end=" ")
     message = input()
     crypto = SymmetricKeyCryptography()
-    crypto.execute(message)
-    print(f"Encrypted message: {message}")
+    output = crypto.execute(message)
+    print(f"Encrypted message: {output}")
 
 if __name__ == "__main__":
     main()
