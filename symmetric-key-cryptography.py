@@ -89,7 +89,7 @@ class SymmetricKeyCryptography:
             self.sub_bytes()
             self.shift_rows()
             self.mix_columns()
-            self.add_round_key()
+            self.add_round_key(i)
     
     def decrypto(self, round_count: int):
         for i in range(round_count):
@@ -131,9 +131,17 @@ class SymmetricKeyCryptography:
             for row in range(4):
                 self.state[row][col] = self.my_dot(row, col)
 
-    def add_round_key(self):
-        # Perform the AddRoundKey step
-        pass
+    def add_round_key(self, round_count: int):
+        for col in range(4):
+            word = self.key_expansion[round_count * self.Nb + col]
+            bytes_arr = [
+                (word >> 24) & 0xFF,
+                (word >> 16) & 0xFF,
+                (word >> 8) & 0xFF,
+                word & 0xFF
+            ]
+            for row in range(4):
+                self.state[row][col] ^= bytes_arr[row]
 
     def pkcs7_pad(self, data: bytes) -> bytes:
         pad = self.block_size - len(data) % self.block_size
