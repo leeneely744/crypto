@@ -42,9 +42,9 @@ class SymmetricKeyCryptography:
         self.key = b"\x2b\x7e\x15\x16\x28\xae\xd2\xa6\xab\xf7\x15\x88\x09\xcf\x4f\x3c"
         self.key_expansion = self.generate_key_expansion()
   
-    def init_state(self):
+    def init_state(self) -> list[list[int]]:
         # 4x4 matrix for AES state
-        self.state = [[0] * 4 for _ in range(4)]
+        return [[0] * 4 for _ in range(4)]
 
     def generate_key_expansion(self) -> list[int]:
         k = self.key  # for short
