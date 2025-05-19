@@ -95,7 +95,7 @@ class SymmetricKeyCryptography:
 
     def cipher(self) -> bytes:
         self.add_round_key(0) # initial round key
-        for i in range(1, 10): # 1~9 rounds
+        for i in range(1, self.Nr): # 1~9 rounds
             self.sub_bytes()
             self.shift_rows()
             self.mix_columns()
