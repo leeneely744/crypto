@@ -41,10 +41,16 @@ class SymmetricKeyCryptography:
         # for test key
         self.key = b"\x2b\x7e\x15\x16\x28\xae\xd2\xa6\xab\xf7\x15\x88\x09\xcf\x4f\x3c"
         self.key_expansion = self.generate_key_expansion()
+        self.rcon = self.generate_rcon()
   
     def init_state(self) -> list[list[int]]:
         # 4x4 matrix for AES state
         return [[0] * 4 for _ in range(4)]
+
+    def generate_rcon(self) -> list[int]:
+        # Rcon[i] contains the values given by the formula x^(i-1) in GF(2^8)
+        # where x is denoted as {02} in the field GF(2^8)
+        return [x<<24 for x in self.generate_rcon(self.Nr+1)]
 
     def generate_key_expansion(self) -> list[int]:
         k = self.key  # for short
