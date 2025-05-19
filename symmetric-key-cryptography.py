@@ -93,7 +93,7 @@ class SymmetricKeyCryptography:
     def xtime(self, x: int) -> int:
         return ((x << 1) ^ 0x1b) & 0xff if (x & 0x80) else (x << 1) & 0xff
 
-    def cipher(self):
+    def cipher(self) -> bytes:
         self.add_round_key(0) # initial round key
         for i in range(1, 10): # 1~9 rounds
             self.sub_bytes()
@@ -104,6 +104,8 @@ class SymmetricKeyCryptography:
         self.sub_bytes()
         self.shift_rows()
         self.add_round_key(10)
+
+        return bytes(self.state[row][col] for col in range(4) for row in range(4))
 
     def sub_bytes(self):
         for col in range(4):
