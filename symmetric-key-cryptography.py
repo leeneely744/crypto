@@ -176,7 +176,7 @@ class SymmetricKeyCryptography:
         for offset in range(0, len(message_bytes), self.block_size):
             # block xor prev, and insert it to state
             block = message_bytes[offset: offset + self.block_size]
-            block = bytes(a ^ b for a, b in zip(message_bytes[offset: offset+self.block_size], prev))
+            block = bytes(a ^ b for a, b in zip(block, prev))
             self.input_block_to_state(block)
 
             crypto = self.cipher()
