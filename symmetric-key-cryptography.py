@@ -93,7 +93,7 @@ class SymmetricKeyCryptography:
     def xtime(self, x: int) -> int:
         return ((x << 1) ^ 0x1b) & 0xff if (x & 0x80) else (x << 1) & 0xff
 
-    def round(self, round_count: int):
+    def cipher(self):
         self.add_round_key(0) # initial round key
         for i in range(1, 10): # 1~9 rounds
             self.sub_bytes()
@@ -169,7 +169,6 @@ class SymmetricKeyCryptography:
         data = message.encode('utf-8')
         message_bytes = self.pkcs7_pad(data)
         prev = os.urandom(self.block_size)
-        round_count = 0
 
         final_crypto = b""
         for offset in range(0, len(message_bytes), self.block_size):
@@ -178,10 +177,9 @@ class SymmetricKeyCryptography:
             block = bytes(a ^ b for a, b in zip(message_bytes[offset: offset+self.block_size], prev))
             self.input_block_to_state(block)
 
-            crypto = self.round(round_count)
+            crypto = self.cipher()
 
             prev = crypto
-            round_count += 1
             final_crypto += crypto
 
         return final_crypto.hex()
