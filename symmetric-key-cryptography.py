@@ -129,7 +129,7 @@ class SymmetricKeyCryptography:
             b >>= 1
         return res
 
-    def my_dot(self, x: int, y, int) -> int:
+    def my_dot(self, x: int, y: int) -> int:
         return self.mul(self.constant_matrix[x][0], self.state[0][y]) ^ \
                 self.mul(self.constant_matrix[x][1], self.state[1][y]) ^ \
                 self.mul(self.constant_matrix[x][2], self.state[2][y]) ^ \
@@ -170,9 +170,10 @@ class SymmetricKeyCryptography:
         
         data = message.encode('utf-8')
         message_bytes = self.pkcs7_pad(data)
-        prev = os.urandom(self.block_size)
+        iv = os.urandom(self.block_size)
+        prev = iv
 
-        final_crypto = b""
+        ciphertext = bytearray(iv)
         for offset in range(0, len(message_bytes), self.block_size):
             # block xor prev, and insert it to state
             block = message_bytes[offset: offset + self.block_size]
@@ -182,9 +183,9 @@ class SymmetricKeyCryptography:
             crypto = self.cipher()
 
             prev = crypto
-            final_crypto += crypto
+            ciphertext.extend(crypto)
 
-        return final_crypto.hex()
+        return ciphertext.hex()
 
 
 def main():
