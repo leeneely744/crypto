@@ -16,6 +16,18 @@ class PublicKeyCryptography:
     def generate_keypair(self):
         # For practice, we use a specific secret key
         self.secret_key = 23731619542357098500868790785283
+    
+    def modinv(self, a: int, b: int) -> int:
+        """Return a mod b."""
+        return a % b
+
+    def point_add(self, P: tuple, Q: tuple) -> tuple:
+        """Add two points P and Q on the elliptic curve."""
+        pass
+
+    def scalar_mult(self, d: int, G: tuple) -> tuple:
+        """Add point G to itself d times."""
+        pass
 
     def execute(self, message: str) -> str:
         if not message:
