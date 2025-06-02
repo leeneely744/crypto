@@ -17,9 +17,22 @@ class PublicKeyCryptography:
         # For practice, we use a specific secret key
         self.secret_key = 23731619542357098500868790785283
     
-    def modinv(self, a: int, b: int) -> int:
-        """Return a mod b."""
-        return a % b
+    def modinv(self, a: int, p: int) -> int:
+        """
+        Compute the modular inverse of a modulo p.
+        Extended Euclidean Algorithm
+        """
+        if a == 0:
+            raise ValueError("Inverse does not exist for zero.")
+        lm, hm = 1, 0  # low multiplier, high multiplier
+        low, high = a % p, p
+        while low > 1:
+            ratio = high // low
+            nm = hm - lm * ratio
+            new = high - low * ratio
+            hm, lm = lm, nm
+            high, low = low, new
+        return lm % p
 
     def point_add(self, P: tuple, Q: tuple) -> tuple:
         """Add two points P and Q on the elliptic curve."""
