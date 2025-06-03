@@ -16,6 +16,7 @@ class PublicKeyCryptography:
     def generate_keypair(self):
         # For practice, we use a specific secret key
         self.secret_key = 23731619542357098500868790785283
+        self.public_key = self.scalar_mult(self.secret_key, self.G)
     
     def modinv(self, a: int, p: int) -> int:
         """
