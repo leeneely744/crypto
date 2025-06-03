@@ -62,8 +62,21 @@ class PublicKeyCryptography:
         return (x3, y3)
 
     def scalar_mult(self, d: int, G: tuple) -> tuple:
-        """Add point G to itself d times."""
-        pass
+        """
+        Returns d * G using double and add algorithm.
+        d: scalar (private key)
+        G: base point (x, y)
+        """
+        N = G
+        Q = None # Initially, Q is the point at infinity
+
+        while d > 0:
+            if d & 1:
+                # If Least Significant Bit is 1, addtion.
+                Q = self.point_add(Q, N, self.a, self.p)
+            N = self.point_add(N, N, self.a, self.p)
+            d >>= 1 # Shift right to decrease one bit in binary
+        return Q
 
     def execute(self, message: str) -> str:
         if not message:
