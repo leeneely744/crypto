@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
+import secrets
+
 class PublicKeyCryptography:
     """ECDSA public-key cryptography example."""
     def __init__(self, key: str):
@@ -79,6 +82,31 @@ class PublicKeyCryptography:
             d >>= 1 # Shift right to decrease one bit in binary
         return Q
 
+    def sign(self, message: str) -> tuple:
+        # Because all operations in ECDSSA are
+        # defined over a finite field modulo
+        # the order n of the elliptic curve.
+        z = int(hashlib.sha256(message.encode()).hexdigest(), 16) % self.n
+
+        while True:
+            k = secrets.randbelow(self.n)
+            if k == 0:
+                continue
+            
+            # Multiply the elliptic curve point G by k
+            x1, _ = self.scalar_mult(k, (self.x, self.y))
+            r = x1 % self.n
+            if r == 0:
+                continue
+
+            # Generate s using the secret key
+            k_inv = self.modinv(k, self.n)
+            s = (k_inv * (z + r * self.secret_key)) % self.n
+            if s == 0:
+                continue
+
+            return (r, s)
+        
     def execute(self, message: str) -> str:
         if not message:
             print("Please enter a message. Do nothing.")
