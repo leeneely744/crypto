@@ -107,7 +107,7 @@ class PublicKeyCryptography:
 
             return (r, s)
         
-    def verify(self, message: str, signature: tuple, public_key: tuple) -> bool:
+    def verify(self, message: str, signature: tuple) -> bool:
         r, s = signature
         if not (1 <= r < self.n and 1 <= s < self.n):
             return False # r, s out of range
@@ -119,7 +119,7 @@ class PublicKeyCryptography:
 
         # Calculate point: u1*G + u2*public_key
         G = (self.x, self.y)
-        P = public_key
+        P = self.public_key
         point1 = self.scalar_mult(u1, G)
         point2 = self.scalar_mult(u2, P)
         x, _ = self.point_add(point1, point2)
@@ -132,8 +132,13 @@ def main():
     print("Please enter a message:", end=" ")
     message = input()
     crypto = PublicKeyCryptography()
-    output = crypto.execute(message)
-    print(f"Encrypted message: {output}")
+    sign = crypto.sign(message)
+    print(f"Signature: {sign}")
+    valid = crypto.verify(message, sign)
+    if valid:
+        print("Signature is valid.")
+    else:
+        print("Signature is invalid.")
 
 if __name__ == "__main__":
     main()
