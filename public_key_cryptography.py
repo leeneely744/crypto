@@ -5,7 +5,7 @@ import secrets
 
 class PublicKeyCryptography:
     """ECDSA public-key cryptography example."""
-    def __init__(self, key: str):
+    def __init__(self):
         # p = 2^256 - 2^32 - 977
         self.p = 115792089237316195423570985008687907852837564279074904382605163141518161494337
         self.a = 0
@@ -15,6 +15,7 @@ class PublicKeyCryptography:
         self.y = 32670510020758816978083085130507043184471273380659243275938904335757337482424
         self.G = (self.x, self.y)
         self.n = 115792089237316195423570985008687907852837564279074904382605163141518161494337
+        self.generate_keypair()
 
     def generate_keypair(self):
         # For practice, we use a specific secret key
@@ -38,7 +39,7 @@ class PublicKeyCryptography:
             high, low = low, new
         return lm % p
 
-    def point_add(self, P: tuple, Q: tuple, a: int, p: int) -> tuple:
+    def point_add(self, P: tuple, Q: tuple) -> tuple:
         """
         Add two points P and Q on an elliptic curve: y^2 = x^3 + ax + b mod p
         """
@@ -55,17 +56,17 @@ class PublicKeyCryptography:
         
         if P == Q:
             # Multiply point by 2
-            m = (3 * x1 * x1 + a) * self.modinv(2 * y1, p) % p
+            m = (3 * x1 * x1 + self.a) * self.modinv(2 * y1, self.p) % self.p
         else:
             # Normal point addition
-            m = (y2 - y1) * self.modinv(x2 - x1, p) % p
+            m = (y2 - y1) * self.modinv(x2 - x1, self.p) % self.p
 
-        x3 = (m * m - x1 - x2) % p
-        y3 = (m * (x1 - x3) - y1) % p
+        x3 = (m * m - x1 - x2) % self.p
+        y3 = (m * (x1 - x3) - y1) % self.p
 
         return (x3, y3)
 
-    def scalar_mult(self, d: int, G: tuple) -> tuple:
+    def scalar_mult(self, d: int, G: tuple[int, int]) -> tuple[int, int]:
         """
         Returns d * G using double and add algorithm.
         d: scalar (private key)
@@ -77,15 +78,13 @@ class PublicKeyCryptography:
         while d > 0:
             if d & 1:
                 # If Least Significant Bit is 1, addtion.
-                Q = self.point_add(Q, N, self.a, self.p)
-            N = self.point_add(N, N, self.a, self.p)
+                Q = self.point_add(Q, N)
+            N = self.point_add(N, N)
             d >>= 1 # Shift right to decrease one bit in binary
         return Q
 
     def sign(self, message: str) -> tuple:
-        # Because all operations in ECDSSA are
-        # defined over a finite field modulo
-        # the order n of the elliptic curve.
+        # Because all operations in ECDSA are defined over a finite field modulo n
         z = int(hashlib.sha256(message.encode()).hexdigest(), 16) % self.n
 
         while True:
@@ -131,14 +130,15 @@ def main():
     print("This is a public-key cryptography example.")
     print("Please enter a message:", end=" ")
     message = input()
+
     crypto = PublicKeyCryptography()
-    sign = crypto.sign(message)
-    print(f"Signature: {sign}")
-    valid = crypto.verify(message, sign)
-    if valid:
-        print("Signature is valid.")
-    else:
-        print("Signature is invalid.")
+
+    signature = crypto.sign(message)
+    print(f"Signature: {signature}")
+
+    valid = crypto.verify(message, signature)
+    print("Signature is valid." if valid else "Signature is invalid.")
+
 
 if __name__ == "__main__":
     main()
