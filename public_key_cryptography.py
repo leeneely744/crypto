@@ -107,13 +107,24 @@ class PublicKeyCryptography:
 
             return (r, s)
         
-    def execute(self, message: str) -> str:
-        if not message:
-            print("Please enter a message. Do nothing.")
-            return ""
+    def verify(self, message: str, signature: tuple, public_key: tuple) -> bool:
+        r, s = signature
+        if not (1 <= r < self.n and 1 <= s < self.n):
+            return False # r, s out of range
         
-        encrypted_message = self.encrypt(message)
-        return encrypted_message
+        z = int(hashlib.sha256(message.encode()).hexdigest(), 16) % self.n
+        w = self.modinv(s, self.n)
+        u1 = (z * w) % self.n
+        u2 = (r * w) % self.n
+
+        # Calculate point: u1*G + u2*public_key
+        G = (self.x, self.y)
+        P = public_key
+        point1 = self.scalar_mult(u1, G)
+        point2 = self.scalar_mult(u2, P)
+        x, _ = self.point_add(point1, point2)
+
+        return r == (x % self.n)
 
 
 def main():
